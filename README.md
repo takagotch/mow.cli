@@ -230,16 +230,137 @@ src = cp.StringsPtr(&src, StringsArg{
   SetByUser: &srcSetByUser,
 })
 
-//file command
+docker := cli.App("docker", "A self-sufficient runtime for linux containers")
 
+docker.Command("run", "Run a command in a new container", func(cmd *cli.Cmd) {
+})
 
+docker.Command("run", "Run a command in a new container", func(cmd *cli.Cmd) {
+  var (
+    detached = cmd.BoolOpt("d detach", false, "Run container in background")
+    memory = cmd.StringOpt("m memory", "", "Set memory limit")
+    image = cmd.StringArg("IMAGE", "", "The image to run")
+  )
+  
+  cmd.Action = func() {
+    if *detached {
+    }
+    runContainer(*image, *detached, *memory)
+  }
+})
 
+cmd.LogDesc = `Run ...`
 
+docker.Command("job", "action on jobs", func(job *cli.Cmd) {
+  job.Command("list", "list jobs", listJobs)
+  job.Command("start", "start a new job", startJob)
+  job.Command("log", "log commands", func(log *cli.Cmd) {
+    log.Command("show", "show logs", showLog)
+    log.Command("clear", "clear logs", clearLog)
+  })
+})
 
+job.Command("start run r", "start a new job", startJob)
 
+app.command("list", "list all configs", cli.ActinCommand(list))
+app.Command("list", "list ll configs", func(cmd *cli.Cmd)) {
+  cmd.Action = func() {
+    list()
+  }
+}
 
+app := cli.App("app", "bla bla")
+verbose := app.BoolOpt("verbose v", false, "Enable debug logs")
+app.Command("command1", "...", func(cmd *cli.Cmd) {
+  if (*verbose) {
+    logrus.SetLevel(logrus.DebugLevel)
+  }
+})
+app.Command("command2", "...", func(cmd *cli.Cmd) {
+  if (*verbose) {
+    logrus.SetLevel(logrus.DebugLevel)
+  }
+})
 
+app.Before = func() {
+  if (*verbose) {
+    logrus.SetLevel(logrus.DebugLevel)
+  }
+}
 
+cp := cli.App("cp", "copy files around")
+cp.Spec = "[-R [-H | -L | -P]]"
+
+docker := cli.App("docker", "A self-sufficinet runtime for linux containers")
+docker.Command("run", "Run a command in a new container", func(cmd *cli.Cmd) {
+  cmd.Spec = "[-d|--rm] IMAGE [COMMAND [ARG...]]"
+})
+
+x.Spec = "-f"
+forceFlag := x.BoolOpt("f force", ...)
+
+x.Spec="SEC DST"
+src := x.StringArg("SRC", ...)
+dst := x.StringArg("DST", ...)
+
+x.Spec = "-f -g SRC -h DST"
+var (
+  factor = x.IntOpt("f", 1, "Fun factor (1-5)")
+  gemes = x.IntOpt("g", 1, "# of games")
+  health = x.IntOpt("h", 1, "# of hosts")
+  src = x.StringArg("SRC", ...)
+  dst = x.StringArg("DST", ...)
+)
+
+x.Spec = "[-x]"
+heapSize := x.intOpt("x", 1024, "Heapsize in MB")
+s.Spec = "-lp [OPTION]"
+
+x.Spec = "--rm | --daemon"
+x.Spec = "-H | -L | -P"
+x.Spec = "-t | DST"
+
+x.Spec = "-e... SRC..."
+
+x.Spec = "(-e COMMAND)... | (-x|-y)"
+
+docker.Command("run", "Run a command in a new container", func(cmd *cli.Cmd) {
+  var (
+    detached = cmd.BoolOpt("d detach", false, "Run container in background")
+    memory = cmd.StringOpt("m memory", "", "Set memory limit")
+    image = cmd.StringArg("IMAGE", "", "The image to run")
+    args = cmd.StringArg("ARG", nil, "Arguments")
+  )
+})
+
+type Duration time.Duration
+
+func (d *Duration) Set(v string) error {
+  parsed, err := time.ParseDuration(v)
+  if err != nil {
+    return err
+  }
+  *d = Duration(parsed)
+  return nil
+}
+
+func (d *Duration) String() string {
+  duration := time.Duration(*d)
+  return duration.String()
+}
+
+func main() {
+  duration := Duration(0)
+  app := App("var", "")
+  app.VarArg("DURATION", &duration, "")
+  app.Run([]string["cp", "1h31m42s"])
+}
+
+type BoolLike int
+
+func (d *BoolLike) IsBoolFlga() bool {
+  return true
+}
 
 type Durations []time.Duration
 
@@ -270,6 +391,15 @@ func (a *Action) IsDefault() bool {
 
 ```sh
 go get github.com/jawher/mow.cli
+
+cp SRC... DST
+
+docker job list
+docker job start
+docker job run
+docker job r
+docker job log show
+docker job log clear
 ```
 
 ```
