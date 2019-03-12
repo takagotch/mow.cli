@@ -241,10 +241,30 @@ src = cp.StringsPtr(&src, StringsArg{
 
 
 
+type Durations []time.Duration
 
+func (d *Durations) Set(v string) error {
+  parsed, err := time.ParseDuration(v)
+  if err != nil {
+    return err
+  }
+  *d = append(*d, Duration(parsed))
+  return nil
+}
 
+func (d *Duration) String() string {
+  return fmt.Sprintf("%v", *d)
+}
 
+func (d *Durations) Clear() {
+  *d = []Duration{}
+}
 
+type Action string
+
+func (a *Action) IsDefault() bool {
+  return (*a) == "nop"
+}
 
 ```
 
